@@ -1,5 +1,5 @@
 package  com.tim.mitsuru.model;
-public class User {
+public class UserLogin {
 
 	private String username;
 
@@ -22,12 +22,12 @@ public class User {
 		this.password = password;
 	}
 
-	public User(String username, String password) {
+	public UserLogin(String username, String password) {
 		this.username = username;
 		this.password = password;
 	}
 
-	public User() {
+	public UserLogin() {
 		
 	}
 }

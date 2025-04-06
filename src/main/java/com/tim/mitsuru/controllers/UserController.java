@@ -4,17 +4,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tim.mitsuru.model.User;
+import com.tim.mitsuru.model.UserLogin;
+
 
 @RestController
 @RequestMapping("api/user")
 public class UserController {
 
 
-	private User testUser = new User("mitsuru", "na-chan");
+	private UserLogin testUser = new UserLogin("mitsuru", "na-chan");
 
 	@GetMapping("/id")
-	public User findUserId() {
+	public UserLogin findUserId() {
 		return testUser;
 	}
 }
