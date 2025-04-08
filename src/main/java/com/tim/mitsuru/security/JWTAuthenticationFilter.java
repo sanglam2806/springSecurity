@@ -2,6 +2,7 @@ package com.tim.mitsuru.security;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,6 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tim.mitsuru.model.UserLogin;
 
@@ -40,7 +43,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain, Authentication authentication) {
+		String token = JWT.create()
+				.withSubject(((UserLogin) authentication.getPrincipal()).getUsername())
+				.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.EXPIRATION_TIME))
+				.sign(Algorithm.HMAC512(SecurityConstant.SECRET));
 
+		response.addHeader(SecurityConstant.HEADER_STRING, SecurityConstant.TOKEN_PREFIX + token);
 	}
 }
 
