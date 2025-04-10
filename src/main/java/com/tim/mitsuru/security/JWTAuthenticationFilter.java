@@ -29,25 +29,29 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response){
+		System.out.println("Hello na-chan from JWT authen-------------------");
 		try {
 			UserLogin creds = new ObjectMapper().readValue(request.getInputStream(), UserLogin.class);
 
-			return this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-				creds.getUsername(), creds.getPassword(), new ArrayList<>()
-			));
+			return this.authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(creds.getUsername(), creds.getPassword(), new ArrayList<>())
+			);
 		} catch (IOException e) {
 			throw new BadCredentialsException(e.getMessage(), e);
 		}
 	}
 
 	@Override
-	public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authentication) throws IOException {
+		System.out.println("-----11111111111------");
 		String token = JWT.create()
 				.withSubject(((UserLogin) authentication.getPrincipal()).getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.EXPIRATION_TIME))
-				.sign(Algorithm.HMAC512(SecurityConstant.SECRET));
-
+				.sign(Algorithm.HMAC512(SecurityConstant.SECRET.getBytes()));
+		System.out.println( "--------token at authen is " + token);
 		response.addHeader(SecurityConstant.HEADER_STRING, SecurityConstant.TOKEN_PREFIX + token);
 	}
 }
